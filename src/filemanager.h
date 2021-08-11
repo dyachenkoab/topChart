@@ -24,7 +24,7 @@ class FileManager : public QObject
 
 public:
     FileManager( const QString &link_, QObject *parent = nullptr );
-    ~FileManager(){qDebug() << "destructor filemanager worked";};
+    ~FileManager() = default;
 
 public slots:
     void openFile();

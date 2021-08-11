@@ -3,14 +3,12 @@
 FileManager::FileManager( const QString &link_, QObject *parent )
     : QObject( parent )
 {
-//    m_link = QUrl( link_ );
-    m_link = QUrl( "/home/user4/Downloads/topChart/data/data" );
-    qDebug() << "new filemanager";
+    m_link = QUrl( link_ );
 }
 
 void FileManager::openFile()
 {
-    m_file.setFileName( "/home/user4/Downloads/topChart/data/data" );
+    m_file.setFileName( m_link.toLocalFile() );
 
     if ( !m_file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
         emit imDone();
