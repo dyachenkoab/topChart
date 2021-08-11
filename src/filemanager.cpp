@@ -3,12 +3,14 @@
 FileManager::FileManager( const QString &link_, QObject *parent )
     : QObject( parent )
 {
-    m_link = QUrl( link_ );
+//    m_link = QUrl( link_ );
+    m_link = QUrl( "/home/user4/Downloads/topChart/data/data" );
+    qDebug() << "new filemanager";
 }
 
 void FileManager::openFile()
 {
-    m_file.setFileName( m_link.toLocalFile() );
+    m_file.setFileName( "/home/user4/Downloads/topChart/data/data" );
 
     if ( !m_file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
         emit imDone();
@@ -41,6 +43,8 @@ void FileManager::computation()
         }
     }
 
+    m_file.flush();
+    m_file.close();
     std::sort( note.begin(), note.end() );
 
     if ( size ){

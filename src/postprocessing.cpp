@@ -1,7 +1,9 @@
 #include "postprocessing.h"
-#include <QMetaType>
+#include <QScopedPointer>
 
-PostProcessing::PostProcessing( QObject *parent ) : QObject( parent ) {}
+PostProcessing::PostProcessing( QObject *parent ) : QObject( parent ) {
+    newComputation("123");
+}
 
 void PostProcessing::prepareTop15( const QVariant &map, const int &max )
 {
@@ -23,6 +25,8 @@ void PostProcessing::newComputation( const QString &link )
 
     connect( fm, &FileManager::maxSize, this, &PostProcessing::fileSize );
     connect( fm, &FileManager::actualSizeReaded, this, &PostProcessing::currentSize );
+
+    connect(thread, &QThread::finished, [fm]{ delete fm; });
 
     connect( fm, &FileManager::imDone, thread, &QThread::quit );
     connect( fm, &FileManager::imDone, this, &PostProcessing::done );

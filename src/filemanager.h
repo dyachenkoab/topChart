@@ -23,8 +23,8 @@ class FileManager : public QObject
     void computation();
 
 public:
-    explicit FileManager( const QString &link_, QObject *parent = nullptr );
-    ~FileManager() = default;
+    FileManager( const QString &link_, QObject *parent = nullptr );
+    ~FileManager(){qDebug() << "destructor filemanager worked";};
 
 public slots:
     void openFile();
