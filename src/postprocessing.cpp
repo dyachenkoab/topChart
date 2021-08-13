@@ -1,9 +1,7 @@
 #include "postprocessing.h"
 #include <QScopedPointer>
 
-PostProcessing::PostProcessing( QObject *parent ) : QObject( parent ) {
-    newComputation("123");
-}
+PostProcessing::PostProcessing( QObject *parent ) : QObject( parent ) {}
 
 void PostProcessing::prepareTop15( const QVariant &map, const int &max )
 {
@@ -18,7 +16,7 @@ void PostProcessing::prepareTop15( const QVariant &map, const int &max )
 void PostProcessing::newComputation( const QString &link )
 {
     QThread *thread = new QThread();
-    QPointer <FileManager> fm = new FileManager( link );
+    FileManager *fm = new FileManager( link );
 
     fm->moveToThread( thread );
     connect( thread, &QThread::started, fm, &FileManager::openFile );
@@ -26,18 +24,19 @@ void PostProcessing::newComputation( const QString &link )
     connect( fm, &FileManager::maxSize, this, &PostProcessing::fileSize );
     connect( fm, &FileManager::actualSizeReaded, this, &PostProcessing::currentSize );
 
-    connect(thread, &QThread::finished, [fm]{ delete fm; });
+    connect( thread, &QThread::finished, [fm] { delete fm; } );
 
     connect( fm, &FileManager::imDone, thread, &QThread::quit );
     connect( fm, &FileManager::imDone, this, &PostProcessing::done );
     connect( thread, &QThread::finished, thread, &QThread::deleteLater );
 
-    connect( fm, &FileManager::sendTop15, this, &PostProcessing::prepareTop15);
+    connect( fm, &FileManager::sendTop15, this, &PostProcessing::prepareTop15 );
 
     thread->start();
 }
 
-void PostProcessing::cleanUp(){
+void PostProcessing::cleanUp()
+{
     m_keys.clear();
     m_values.clear();
     m_max = 0;

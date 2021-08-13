@@ -1,4 +1,6 @@
 #include "filemanager.h"
+#include <chrono>
+#include <QLocale>
 
 FileManager::FileManager( const QString &link_, QObject *parent )
     : QObject( parent )
@@ -20,6 +22,7 @@ void FileManager::openFile()
 
 void FileManager::computation()
 {
+    auto t1 = std::chrono::high_resolution_clock::now();
     QList<Note> note;
     int size = 0;
 
@@ -41,9 +44,8 @@ void FileManager::computation()
         }
     }
 
-    m_file.flush();
-    m_file.close();
     std::sort( note.begin(), note.end() );
+    m_file.close();
 
     if ( size ){
         m_max = note.at( 0 ).count;
@@ -60,6 +62,11 @@ void FileManager::computation()
 
     QVariant variant;
     variant.setValue(m_map);
+    auto t2 = std::chrono::high_resolution_clock::now();
+
+    auto sec = std::chrono::duration_cast<std::chrono::seconds>(t2 - t1);
+    qDebug() << sec.count() << "- Sec," << (m_file.size() / 1024) / 1024 << "- file size in Mb";
+
 
     emit sendTop15( variant, m_max );
     emit imDone();
